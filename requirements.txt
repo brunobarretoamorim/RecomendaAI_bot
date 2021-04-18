@@ -1,0 +1,14 @@
+flask
+pandas
+numpy
+pyarrow==0.15.1
+Cython
+progress
+pickle-mixin
+sklearn
+pytelegrambotapi
+matplotlib
+seaborn
+PyPDF2
+reportlab
+wordcloud
