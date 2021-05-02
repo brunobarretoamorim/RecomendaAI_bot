@@ -79,7 +79,7 @@ class Visualization:
         for texto in texto_tratado:
             for palavra in texto:
                 unique_string = unique_string+' '+palavra
-        cloud = WordCloud(background_color='white',prefer_horizontal=1,contour_width=10).generate(unique_string)
+        cloud = WordCloud(color_func=lambda *args, **kwargs: "gray",background_color='white',prefer_horizontal=1,contour_width=10).generate(unique_string)
         #plt.figure()
         plt.xticks([])
         plt.yticks([])
