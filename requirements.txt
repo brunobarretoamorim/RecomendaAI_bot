@@ -12,3 +12,4 @@ seaborn
 PyPDF2
 reportlab
 wordcloud
+nltk
