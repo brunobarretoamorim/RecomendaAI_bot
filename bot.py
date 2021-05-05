@@ -8,8 +8,8 @@ import json
 import time
 from progress.bar import Bar
 
-#bot = telebot.TeleBot('1631430287:AAFbmEC-7654WlacSDzCHReaip_nXt1yR1I') # bot bruno
-bot = telebot.TeleBot('1613492568:AAG-_TyHADfLf0Lqw7VpRFfOGMpNHk3yQKU') # bot jonathan
+bot = telebot.TeleBot('1631430287:AAFbmEC-7654WlacSDzCHReaip_nXt1yR1I') # bot bruno
+#bot = telebot.TeleBot('1613492568:AAG-_TyHADfLf0Lqw7VpRFfOGMpNHk3yQKU') # bot jonathan
 
 dic = {'materia':'','cor_prova':'','respostas':'','retorno':''}
 # handle commands, /start
@@ -61,7 +61,7 @@ def trataInputsProva(message):
     ##print(dic['retorno'])
     pload = dic.get("retorno")
     pload = json.loads(pload)
-
+    #r = requests.post('https://localhost:5000/modelo', json=pload)
     r = requests.post('https://recomendaai-api-test.azurewebsites.net/modelo', json=pload)
     bot.send_message(message.chat.id, 'Processando |######         | 60%')
     time.sleep(1)
@@ -114,4 +114,4 @@ def handle_all_message(message):
         bot.reply_to(message, 'Ops, não entendi. Se quiser saber as opções disponíveis, digite "menu" ou se quiser sair, digite "sair"')
         
 
-bot.polling(none_stop=True)
+bot.polling()
