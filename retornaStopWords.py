@@ -2,6 +2,7 @@ from nltk.corpus import stopwords
 import nltk
 from bs4 import BeautifulSoup
 import requests
+import os
 
 def removeStopwords_1():
     ''' Nesta função as palavras de apoio da língua portugesa são agrupadas em forma de lista para
@@ -27,5 +28,12 @@ def retornaListaSwCompleta():
     língua portugesa.'''
     stopwords = removeStopwords_1()
     verbos = listaVerbos()
-    return stopwords + verbos
-stopwords_final = retornaListaSwCompleta()
+    stopwords_final = stopwords + verbos
+    with open(os.path.join(os.getcwd(),'config','lista_stopwords.txt'), 'w') as f:
+        s1='\n'.join(stopwords_final)
+        f.write(s1)
+        f.close()
+
+print("Executando ...")
+retornaListaSwCompleta()
+print("Finished")
