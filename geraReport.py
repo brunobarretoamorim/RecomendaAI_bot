@@ -10,7 +10,6 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from matplotlib import pylab as pl
 from PIL import Image
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.lib.styles import ParagraphStyle
@@ -18,9 +17,11 @@ from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Frame, Paragraph
 from wordcloud import WordCloud
-import nltk
 from nltk.corpus import stopwords
+import nltk
+
 class Visualization:
+    nltk.download('stopwords')
     import os
     image_dir = os.getcwd()
     
@@ -34,7 +35,8 @@ class Visualization:
         return b
         #print('Deu certo')
     def bar(self,b):
-        image_dir =  image_dir = os.getcwd()
+        #print(b)
+        image_dir = os.getcwd()
         print("Generating Bar Plot.....")
         plt.figure(figsize=(10, 5))
         sns.set(style="white", font_scale=1.5)
@@ -66,7 +68,7 @@ class Visualization:
         plt.clf()
     
     def gen_wordcloud(self,lista_habilidades):
-        image_dir =  image_dir = os.getcwd()
+        image_dir = os.getcwd()
         #bg = np.array(Image.open('logo.png'))
         stopwords_lista = stopwords.words('portuguese')
         unique_string = ""
@@ -152,13 +154,15 @@ class Visualization:
         else:
             print("No opener found for your platform. Just open Enem_Report.pdf.")
             
-    def executar(dc):
+    def executar(dc, materia):
         z = Visualization()
         dic = z.retornaDicionarioHabilidades(dc)
         z.bar(dic)
         with open(os.path.join(os.getcwd(),'config','media_erros.json'), 'r') as lp:
-             a = json.load(lp)
+            a = json.load(lp)
+        
+        print(dc)
 
-        z.errosAlunoxBase(a,dc,'ch')
+        z.errosAlunoxBase(a,dc,materia)
         z.gen_wordcloud(dc.keys())
         z.gen_pdf()

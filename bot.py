@@ -7,9 +7,10 @@ import requests
 import json
 import time
 from progress.bar import Bar
+import threading
 
-bot = telebot.TeleBot('1631430287:AAFbmEC-7654WlacSDzCHReaip_nXt1yR1I') # bot bruno
-#bot = telebot.TeleBot('1613492568:AAG-_TyHADfLf0Lqw7VpRFfOGMpNHk3yQKU') # bot jonathan
+#bot = telebot.TeleBot('1631430287:AAFbmEC-7654WlacSDzCHReaip_nXt1yR1I') # bot bruno
+bot = telebot.TeleBot('1613492568:AAG-_TyHADfLf0Lqw7VpRFfOGMpNHk3yQKU') # bot jonathan
 
 dic = {'materia':'','cor_prova':'','respostas':'','retorno':''}
 # handle commands, /start
@@ -71,7 +72,7 @@ def trataInputsProva(message):
     materia = dic.get("materia")
     PATH = f'resultados/resultado_{chat_id}_{materia}.txt'
     user = message.from_user.first_name
-    Visualization.executar(response)
+    Visualization.executar(response,materia)
     #executar(response)
     resp_file = open(os.path.join(os.getcwd(),'resultados','Enem_Report.pdf'),'rb')
     #f = open(PATH, "w")
@@ -114,4 +115,4 @@ def handle_all_message(message):
         bot.reply_to(message, 'Ops, não entendi. Se quiser saber as opções disponíveis, digite "menu" ou se quiser sair, digite "sair"')
         
 
-bot.polling()
+bot.polling(none_stop=False)
