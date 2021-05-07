@@ -17,11 +17,10 @@ from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Frame, Paragraph
 from wordcloud import WordCloud
-from nltk.corpus import stopwords
-import nltk
+
 
 class Visualization:
-    nltk.download('stopwords')
+    #nltk.download('stopwords')
     import os
     image_dir = os.getcwd()
     
@@ -70,13 +69,17 @@ class Visualization:
     def gen_wordcloud(self,lista_habilidades):
         image_dir = os.getcwd()
         #bg = np.array(Image.open('logo.png'))
-        stopwords_lista = stopwords.words('portuguese')
+        #stopwords_lista = stopwords.words('portuguese')
         unique_string = ""
 
         texto_tratado = []
+        with open(os.path.join(os.getcwd(),'config','lista_stopwords.txt'), 'r') as f:
+            a = f.read()
+            stopwords = a.split('\n')
+            f.close()
         for i in list(lista_habilidades):
             texto_para_analisar = i.split(' ')
-            texto_tratado.append([c for c in texto_para_analisar if c not in(stopwords_lista)])
+            texto_tratado.append([c for c in texto_para_analisar if c not in(stopwords)])
 
         for texto in texto_tratado:
             for palavra in texto:
