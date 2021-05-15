@@ -9,8 +9,8 @@ import time
 from progress.bar import Bar
 import threading
 
-#bot = telebot.TeleBot('1631430287:AAFbmEC-7654WlacSDzCHReaip_nXt1yR1I') # bot bruno
-bot = telebot.TeleBot('1613492568:AAG-_TyHADfLf0Lqw7VpRFfOGMpNHk3yQKU') # bot jonathan
+bot = telebot.TeleBot('1875133112:AAHJca-NELDzqJ_2ROJGJVjYrvDPM3PBptQ') # bot bruno
+#bot = telebot.TeleBot('1613492568:AAG-_TyHADfLf0Lqw7VpRFfOGMpNHk3yQKU') # bot jonathan
 
 dic = {'materia':'','cor_prova':'','respostas':'','retorno':''}
 # handle commands, /start
@@ -30,10 +30,33 @@ def handle_command(message):
     3 - Recomendações Prova de Linguagens{os.linesep}
     4 - Recomendações Prova de Matemática''', reply_markup=keyboard)
 
-@bot.message_handler(func=lambda message: message.text.strip().upper() in['1','2','3','4'])
+@bot.message_handler(func=lambda message: message.text.strip().upper() in['1','2','4'])
 def trataInputsProva(message):
     materias = {'1':'CH','2':'CN','3':'LC','4':'MT'}
     dic['materia'] = materias[message.text.strip().upper()]
+    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    button1 = types.KeyboardButton(text="AZUL")
+    button2 = types.KeyboardButton(text="VERDE")
+    button3 = types.KeyboardButton(text="AMARELA")
+
+    keyboard.add(button1, button2, button3)
+    bot.send_message(message.chat.id, 'Selecione a cor da Prova que fez:', reply_markup=keyboard)
+
+@bot.message_handler(func=lambda message: message.text.strip().upper() in['3'])
+def trataInputsProva(message):
+    materias = {'1':'CH','2':'CN','3':'LC','4':'MT'}
+    dic['materia'] = materias[message.text.strip().upper()]
+    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    button1 = types.KeyboardButton(text="Inglês")
+    button2 = types.KeyboardButton(text="Português")
+
+    keyboard.add(button1, button2)
+    bot.send_message(message.chat.id, 'Tudo bem ! Agora selecione a língua estrangeira escolhida para a prova', reply_markup=keyboard)
+
+@bot.message_handler(func=lambda message: message.text.strip().upper() in['INGLÊS','PORTUGUÊS'])
+def trataInputsProva(message):
+    lingua = {'0':'Inglês','1':'Português'}
+    #dic['TP_LINGUA'] = materias[message.text.strip().upper()]
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     button1 = types.KeyboardButton(text="AZUL")
     button2 = types.KeyboardButton(text="VERDE")
