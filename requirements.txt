@@ -13,3 +13,4 @@ PyPDF2==1.26.0
 reportlab==3.5.66
 wordcloud==1.7.0
 nltk==3.4.5
+dataframe-image==0.0.7
