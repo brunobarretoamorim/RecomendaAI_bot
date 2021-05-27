@@ -7,12 +7,11 @@ import requests
 import json
 import time
 from progress.bar import Bar
-import threading
+from unidecode import unidecode
 
 bot = telebot.TeleBot('1875133112:AAHJca-NELDzqJ_2ROJGJVjYrvDPM3PBptQ') # bot bruno
 #bot = telebot.TeleBot('1613492568:AAG-_TyHADfLf0Lqw7VpRFfOGMpNHk3yQKU') # bot jonathan
-
-dic = {'materia':'','cor_prova':'','respostas':'','retorno':''}
+dic = {'materia':'','cor_prova':'','respostas':'','retorno':'','TP_LINGUA':''}
 # handle commands, /start
 @bot.message_handler(commands=['start'])
 def handle_command(message):
@@ -48,15 +47,15 @@ def trataInputsProva(message):
     dic['materia'] = materias[message.text.strip().upper()]
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     button1 = types.KeyboardButton(text="Inglês")
-    button2 = types.KeyboardButton(text="Português")
+    button2 = types.KeyboardButton(text="Espanhol")
 
     keyboard.add(button1, button2)
-    bot.send_message(message.chat.id, 'Tudo bem ! Agora selecione a língua estrangeira escolhida para a prova', reply_markup=keyboard)
+    bot.send_message(message.chat.id, 'Selecione a língua estrangeira escolhida:', reply_markup=keyboard)
 
-@bot.message_handler(func=lambda message: message.text.strip().upper() in['INGLÊS','PORTUGUÊS'])
+@bot.message_handler(func=lambda message: message.text.strip().upper() in['INGLÊS','ESPANHOL'])
 def trataInputsProva(message):
-    lingua = {'0':'Inglês','1':'Português'}
-    #dic['TP_LINGUA'] = materias[message.text.strip().upper()]
+    lingua = {'INGLÊS':0,'ESPANHOL':1}
+    dic['TP_LINGUA'] = lingua[message.text.strip().upper()]
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     button1 = types.KeyboardButton(text="AZUL")
     button2 = types.KeyboardButton(text="VERDE")
@@ -80,21 +79,24 @@ def trataInputsProva(message):
 
     respostas = message.text.upper().replace('R -','').strip()
     dic['respostas'] = respostas
-    #print('Respostas',respostas)
-    dic['retorno'] = trataInput(dic['cor_prova'],dic['materia'],dic['respostas'])
-    ##print(dic['retorno'])
+    print('Respostas',respostas)
+    dic['retorno'] = trataInput(dic['cor_prova'],dic['materia'],dic['TP_LINGUA'],dic['respostas'])
+    print(dic['retorno'])
     pload = dic.get("retorno")
     pload = json.loads(pload)
-    #r = requests.post('https://localhost:5000/modelo', json=pload)
-    r = requests.post('https://recomendaai-api-test.azurewebsites.net/modelo', json=pload)
+
+    r = requests.post('http://localhost:5000/modelo', json=pload)
+    #r = requests.post('https://recomendaai-api-test.azurewebsites.net/modelo', json=pload)
     bot.send_message(message.chat.id, 'Processando |######         | 60%')
     time.sleep(1)
     #print(r.json())
     response = r.json()
+    print(response)
     chat_id = message.chat.id
     materia = dic.get("materia")
     PATH = f'resultados/resultado_{chat_id}_{materia}.txt'
     user = message.from_user.first_name
+
     Visualization.executar(response,materia)
     #executar(response)
     resp_file = open(os.path.join(os.getcwd(),'resultados','Enem_Report.pdf'),'rb')
@@ -108,14 +110,14 @@ def trataInputsProva(message):
     time.sleep(5)
     bot.send_message(chat_id, text=f"{user} baixe agora o resultado do seu simulado")
     bot.send_document(chat_id, resp_file)
-
+    print('passou resp file')
     
 
 # handle all messages, echo response back to users
 @bot.message_handler(func=lambda message: True)
 def handle_all_message(message):
     
-    if message.text.strip().lower() == 'menu':
+    if unidecode(message.text.strip().lower()) in('menu','ola','oi'):
         keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
         button1 = types.KeyboardButton(text="1")
         button2 = types.KeyboardButton(text="2")
@@ -137,5 +139,5 @@ def handle_all_message(message):
         #print(message.text)
         bot.reply_to(message, 'Ops, não entendi. Se quiser saber as opções disponíveis, digite "menu" ou se quiser sair, digite "sair"')
         
-
-bot.polling(none_stop=False)
+bot.remove_webhook()
+bot.polling(none_stop = True)
