@@ -8,7 +8,6 @@ import json
 import time
 from progress.bar import Bar
 from unidecode import unidecode
-
 bot = telebot.TeleBot('1875133112:AAHJca-NELDzqJ_2ROJGJVjYrvDPM3PBptQ') # bot bruno
 #bot = telebot.TeleBot('1613492568:AAG-_TyHADfLf0Lqw7VpRFfOGMpNHk3yQKU') # bot jonathan
 dic = {'materia':'','cor_prova':'','respostas':'','retorno':'','TP_LINGUA':''}
@@ -30,8 +29,12 @@ def handle_command(message):
     4 - Recomendações Prova de Matemática''', reply_markup=keyboard)
 
 @bot.message_handler(func=lambda message: message.text.strip().upper() in['1','2','4'])
+
 def trataInputsProva(message):
+    
     materias = {'1':'CH','2':'CN','3':'LC','4':'MT'}
+    if len(dic['materia']) > 0:
+        dic['materia'] = ''
     dic['materia'] = materias[message.text.strip().upper()]
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     button1 = types.KeyboardButton(text="AZUL")
@@ -43,6 +46,8 @@ def trataInputsProva(message):
 
 @bot.message_handler(func=lambda message: message.text.strip().upper() in['3'])
 def trataInputsProva(message):
+    if len(dic['materia']) > 0:
+        dic['materia'] = ''
     materias = {'1':'CH','2':'CN','3':'LC','4':'MT'}
     dic['materia'] = materias[message.text.strip().upper()]
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
@@ -54,6 +59,8 @@ def trataInputsProva(message):
 
 @bot.message_handler(func=lambda message: message.text.strip().upper() in['INGLÊS','ESPANHOL'])
 def trataInputsProva(message):
+    if len(dic['TP_LINGUA']) > 0:
+        dic['TP_LINGUA'] = ''
     lingua = {'INGLÊS':0,'ESPANHOL':1}
     dic['TP_LINGUA'] = lingua[message.text.strip().upper()]
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
@@ -66,6 +73,8 @@ def trataInputsProva(message):
 
 @bot.message_handler(func=lambda message: message.text.strip().upper() in['AZUL','VERDE','AMARELA'])
 def trataInputsProva(message):
+    if len(dic['cor_prova']) > 0:
+        dic['cor_prova'] = ''
     dic['cor_prova'] = message.text.strip().upper()
     bot.send_message(message.chat.id, 'Perfeito, agora pode digitar as suas respostas nesse formato : R - ABC...')
     
@@ -78,6 +87,8 @@ def trataInputsProva(message):
     bot.send_message(message.chat.id, 'Processando |###                | 30%')
 
     respostas = message.text.upper().replace('R -','').strip()
+    if len(dic['respostas']) > 0:
+        dic['respostas'] = ''
     dic['respostas'] = respostas
     print('Respostas',respostas)
     dic['retorno'] = trataInput(dic['cor_prova'],dic['materia'],dic['TP_LINGUA'],dic['respostas'])
@@ -110,6 +121,7 @@ def trataInputsProva(message):
     time.sleep(5)
     bot.send_message(chat_id, text=f"{user} baixe agora o resultado do seu simulado")
     bot.send_document(chat_id, resp_file)
+    existe = True
     print('passou resp file')
     
 
